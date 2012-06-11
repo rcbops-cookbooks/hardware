@@ -9,6 +9,6 @@ version          "0.0.1"
   supports os
 end
 
-%w{ apt osops-utils }.each do |dep|
+%w{ apt osops-utils collectd-graphite }.each do |dep|
   depends dep
 end
