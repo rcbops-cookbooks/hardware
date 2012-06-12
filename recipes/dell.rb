@@ -20,6 +20,9 @@
 # Recipes to install Dell-specific hardware monitoring software
 
 include_recipe "apt"
+include_recipe "osops-utils"
+
+snmp_endpoint = get_bind_endpoint("hardware", "snmpd")
 
 # this is kind of... wrong.  What a strange repo.
 apt_repository "dell" do
@@ -32,17 +35,35 @@ apt_repository "dell" do
   notifies :run, resources(:execute => "apt-get update"), :immediately
 end
 
-%W{srvadmin-all lm-sensors snmp-mibs-downloader}.each do |pkg|
+%W{srvadmin-all lm-sensors snmp-mibs-downloader snmpd}.each do |pkg|
   package pkg do
     action :install
   end
 end
 
-%W{dataeng dsm_om_connsvc}.each do |svc|
+%W{dataeng dsm_om_connsvc snmpd}.each do |svc|
   service svc do
     supports :status => true, :restart => true
     action [ :enable, :start ]
   end
+end
+
+template "/etc/snmp/snmpd.conf" do
+  source "snmpd.conf.erb"
+  owner "root"
+  group "root"
+  mode "0600"
+  variables("bind_address" => snmp_endpoint["host"],
+            "bind_port" => snmp_endpoint["port"],
+            "trap_server" => node["hardware"]["snmpd"]["trap_server"],
+            "trap_community" => node["hardware"]["snmpd"]["trap_community"],
+            "ro_community" => node["hardware"]["snmpd"]["ro_community"],
+            "rw_community" => node["hardware"]["snmpd"]["rw_community"],
+            "syslocation" => node["hardware"]["snmpd"]["syslocation"],
+            "syscontact" => node["hardware"]["snmpd"]["syscontact"],
+            "flavor" => "omsa"
+            )
+  notifies :restart, resources(:service => "snmpd"), :immediately
 end
 
 # FIXME: ohai plugin, probably?
