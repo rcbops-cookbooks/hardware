@@ -18,11 +18,9 @@ as well once the Insight Manager repos are updated for Precise.
 Requirements
 ============
 
-osops-utils: required to find interface to bind snmpd on (uses the tagged network "management")
-
-collectd-graphite: to report health information to collectd, if configured
-
-apt: to add the vendor apt repositories
+ * osops-utils: required to find interface to bind snmpd on (uses the tagged network "management")
+ * collectd-graphite: to report health information to collectd, if configured
+ * apt: to add the vendor apt repositories
 
 
 Attributes
@@ -30,27 +28,27 @@ Attributes
 
 Where the SNMP listener is can be controlled with the following attributes:
 
-default["hardware"]["services"]["snmpd"]["network"] = "management"
-default["hardware"]["services"]["snmpd"]["port"] = 161
+ * default["hardware"]["services"]["snmpd"]["network"] = "management"
+ * default["hardware"]["services"]["snmpd"]["port"] = 161
 
 Trap server can be specified with the following attributes:
 
-default["hardware"]["snmpd"]["trap_server"] = "localhost"
-default["hardware"]["snmpd"]["trap_community"] = "public"
+ * default["hardware"]["snmpd"]["trap_server"] = "localhost"
+ * default["hardware"]["snmpd"]["trap_community"] = "public"
 
 In addition, external trap sink can be disabled by setting trap_server to nil.
 
 Community settings can be specified with the following attributes:
 
-default["hardware"]["snmpd"]["ro_community"] = "public"
-default["hardware"]["snmpd"]["rw_community"] = nil
+ * default["hardware"]["snmpd"]["ro_community"] = "public"
+ * default["hardware"]["snmpd"]["rw_community"] = nil
 
 These are set up for v1/v2c.  No attempt is made to configure v3.
 
 The following mib-2 system variables can also be assigned:
 
-default["hardware"]["snmpd"]["syslocation"] = "Datacenter"
-default["hardware"]["snmpd"]["syscontact"] = "sysadmin@example.com"
+ * default["hardware"]["snmpd"]["syslocation"] = "Datacenter"
+ * default["hardware"]["snmpd"]["syscontact"] = "sysadmin@example.com"
 
 Usage
 =====
