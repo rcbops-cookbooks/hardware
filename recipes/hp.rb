@@ -17,14 +17,12 @@
 # limitations under the License.
 #
 
-# This doesn't actually install HP monitoring software.
-# Instead, it installs a bunch of statically linked blobs that
-# generate segfaults.  YOU'RE WELCOME!
+# This doesn't actually install HP monitoring software.  Instead, it
+# installs a bunch of statically linked blobs that mostly just
+# generate segfaults.
 #
 # Probably you don't want to actually use this.
 #
-
-
 
 include_recipe "apt"
 include_recipe "osops-utils"
@@ -34,16 +32,14 @@ snmp_endpoint = get_bind_endpoint("hardware", "snmpd")
 # this is kind of... wrong.  What a strange repo.
 apt_repository "hp" do
   uri "http://downloads.linux.hp.com/SDR/downloads/ProLiantSupportPack/ubuntu"
-  distribution "natty/8.70"
+  distribution "natty/8.70"  # closest we have... worth a try.
   components ["non-free"]
-  # keyserver "pool.sks-keyservers.net"
-  # key "1285491434D8786F"
 
   notifies :run, resources(:execute => "apt-get update"), :immediately
 end
 
-# It would be way more useful if the package repository actually contained
-# all the packages in the package manifest... so it goes.
+# It would be way more useful if the package manifest actually contained
+# all the packages in the package repo... so it goes.
 bash "workaround-busted-hp-repo" do
   cwd "/tmp"
   user "root"
@@ -111,5 +107,3 @@ template "/opt/hp/hp-snmp-agents/cma.conf" do
 
   notifies :restart, resources(:service => "hp-snmp-agents")
 end
-
-# And TA-DA!  You have a broken system.
