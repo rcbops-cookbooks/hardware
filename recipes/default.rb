@@ -29,3 +29,5 @@ if vendor = rcb_safe_deref(node, "dmi.bios.vendor")
     # include_recipe "hardware::hp"
   end
 end
+
+include_recipe "hardware::common"
