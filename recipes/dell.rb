@@ -21,6 +21,7 @@
 
 include_recipe "apt"
 include_recipe "osops-utils"
+include_recipe "monitoring"
 
 snmp_endpoint = get_bind_endpoint("hardware", "snmpd")
 
@@ -100,7 +101,7 @@ ruby_block "check idrac version" do
   action :create
 end
 
-
-if get_settings_by_role("collectd-server", "roles")
-  include_recipe "hardware::dell-monitoring"
+monitoring_metric "omsa" do
+  type "pyscript"
+  script "omsa_plugin.py"
 end
