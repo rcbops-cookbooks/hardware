@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: hardware
-# Recipe:: dell-monitoring
+# Recipe:: common
 #
 # Copyright 2012, Rackspace Hosting
 #
@@ -17,14 +17,12 @@
 # limitations under the License.
 #
 
-include_recipe "collectd-graphite::collectd-client"
+# All platforms get some kind of monitoring
 
-cookbook_file File.join(node["collectd"]["plugin_dir"], "omsa_plugin.py") do
-  source "omsa_plugin.py"
-  owner "root"
-  group "root"
-  mode "0644"
-end
+include_recipe "monitoring"
 
-collectd_python_plugin "omsa_plugin" do
+%W{syslog cpu disk interface memory swap load}.each do |metric|
+  monitoring_metric metric do
+    type metric
+  end
 end
