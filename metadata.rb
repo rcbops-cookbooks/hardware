@@ -1,4 +1,4 @@
-maintainer       "Rackspace Hosting"
+maintainer       "Rackspace US, Inc."
 maintainer_email "rcb-deploy@lists.rackspace.com"
 license          "Apache 2.0"
 description      "Installs/Configures hardware"
