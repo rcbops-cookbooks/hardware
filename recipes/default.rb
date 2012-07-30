@@ -19,15 +19,19 @@
 
 include_recipe "osops-utils"
 
-if vendor = rcb_safe_deref(node, "dmi.bios.vendor")
-  case vendor
-    when /[Dd]ell/
-    include_recipe "hardware::dell"
-    # Installing the hp management tools is probably a disservice
-    #
-    # when /^[hH][pP]/
-    # include_recipe "hardware::hp"
-  end
-end
+# pretty much all the vendor monitoring stuff is broken.  This probably
+# needs to be enabled by a flag, since it's pretty iffy on a machine
+# by machine basis
+
+# if vendor = rcb_safe_deref(node, "dmi.bios.vendor")
+#   case vendor
+#     when /[Dd]ell/
+#     include_recipe "hardware::dell"
+#     # Installing the hp management tools is probably a disservice
+#     #
+#     # when /^[hH][pP]/
+#     # include_recipe "hardware::hp"
+#   end
+# end
 
 include_recipe "hardware::common"
