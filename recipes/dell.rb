@@ -101,7 +101,23 @@ ruby_block "check idrac version" do
   action :create
 end
 
+# Oooks, this is yowch, and very tied to collectd.
+# needs abstracted more, but then, the pyscript stuff isn't
+# very abstracted anyway, so there ya go.
+
 monitoring_metric "omsa" do
   type "pyscript"
   script "omsa_plugin.py"
+  alarms("hardware.chassis.healthy" => {
+           "Type_gauge" => {
+             :data_source => "value" ,
+             :failure_min => 1.0 }},
+         "hardware.memory.healthy" => {
+           "Type_gauge" => {
+             :data_source => "value",
+             :failure_min => 1.0 }},
+         "hardware.disks.healthy" => {
+           "Type_gauge" => {
+             :data_source => "value",
+             :failure_min => 1.0 }})
 end
