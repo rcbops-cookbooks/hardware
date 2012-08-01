@@ -1,3 +1,5 @@
+default["hardware"]["install_oem"] = false
+
 default["hardware"]["services"]["snmpd"]["network"] = "management"
 default["hardware"]["services"]["snmpd"]["port"] = 161
 
