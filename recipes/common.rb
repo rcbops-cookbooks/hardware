@@ -41,7 +41,7 @@ unmonitored_fs = [ "proc", "sysfs", "fusectl", "debugfs", "securityfs", "devtmpf
 
 # set up base disk utilization -- warn at 80% used for all mounted partitions
 # alarm at 95%, or 4G, whichever is higher
-node.filesystem.inject({}) do |hash,(k,v)|
+node["filesystem"].inject({}) do |hash,(k,v)|
   if v.has_key?("mount") and v.has_key?("fs_type") and not unmonitored_fs.include?(v["fs_type"]) and v.has_key?("kb_size")
     hash.merge(v["mount"] => 1024 * v["kb_size"].to_i)
   else
@@ -63,7 +63,7 @@ end
 # base alert for high paging -- find the swap disk (if it exists)
 # and set up warnings for > 1500 write ops/sec - indicative of high
 # paging activity
-node.filesystem.inject([]) do |ary, (k,v)|
+node["filesystem"].inject([]) do |ary, (k,v)|
   if v.has_key?("fs_type") and v["fs_type"] == "swap"
     ary << k.split("/").last
   else
@@ -79,7 +79,7 @@ end
 
 # set up thresholds for 80% total bandwidth.  Sadly, I don't know
 # if this is pre-differentiated
-node.network.interfaces.inject([]) do |ary, (k,v)|
+node["network"]["interfaces"].inject([]) do |ary, (k,v)|
   if v.has_key?("encapsulation") and v["encapsulation"] = "Ethernet"
     ary << k
   else
