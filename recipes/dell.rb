@@ -19,24 +19,60 @@
 
 # Recipes to install Dell-specific hardware monitoring software
 
-include_recipe "apt"
 include_recipe "osops-utils"
 include_recipe "monitoring"
+platform_options = node["hardware"]["platform"]
 
 snmp_endpoint = get_bind_endpoint("hardware", "snmpd")
 
-# this is kind of... wrong.  What a strange repo.
-apt_repository "dell" do
-  uri "http://linux.dell.com/repo/community/deb/OMSA_7.0"
-  distribution ""
-  components ["/"]
-  keyserver "pool.sks-keyservers.net"
-  key "1285491434D8786F"
+case node["platform"]
+when "redhat", "centos"
+  yum_key "RPM-GPG-KEY-dell" do
+    url "http://linux.dell.com/repo/hardware/latest/RPM-GPG-KEY-dell"
+    action :add
+    only_if { platform?(%w{redhat centos}) }
+  end
 
-  notifies :run, resources(:execute => "apt-get update"), :immediately
+  yum_key "RPM-GPG-KEY-libsmbios" do
+    url "http://linux.dell.com/repo/hardware/latest/RPM-GPG-KEY-libsmbios"
+    action :add
+    only_if { platform?(%w{redhat centos}) }
+  end
+  
+  yum_repository "dell-omsa-indep" do
+    description "Dell OMSA repository - Hardware independent"
+    mirrorlist true
+    url "http://linux.dell.com/repo/hardware/latest/mirrors.cgi?osname=el6&basearch=$basearch&native=1&dellsysidpluginver=$dellsysidpluginver"
+    key "RPM-GPG-KEY-dell"
+    bootstrapurl "http://linux.dell.com/repo/hardware/latest/bootstrap.cgi"
+    action :add
+    only_if { platform?(%w{redhat centos}) }
+  end
+  
+  yum_repository "dell-omsa-specific" do
+    description "Dell OMSA repository - Hardware specific"
+    mirrorlist true
+    url "http://linux.dell.com/repo/hardware/latest/mirrors.cgi?osname=el6&basearch=$basearch&native=1&sys_ven_id=$sys_ven_id&sys_dev_id=$sys_dev_id&dellsysidpluginver=$dellsysidpluginver"
+    key "RPM-GPG-KEY-dell"
+    bootstrapurl "http://linux.dell.com/repo/hardware/latest/bootstrap.cgi"
+    action :add
+    only_if { platform?(%w{redhat centos}) }
+  end
+when "ubuntu"
+  include_recipe "apt"
+  # this is kind of... wrong.  What a strange repo.
+  apt_repository "dell" do
+    uri "http://linux.dell.com/repo/community/deb/OMSA_7.0"
+    distribution ""
+    components ["/"]
+    keyserver "pool.sks-keyservers.net"
+    key "1285491434D8786F"
+  
+    notifies :run, resources(:execute => "apt-get update"), :immediately
+  end
 end
 
-%W{srvadmin-all lm-sensors snmp-mibs-downloader snmpd}.each do |pkg|
+platform_options["omsa_packages"].each do |pkg|
   package pkg do
     action :install
   end
