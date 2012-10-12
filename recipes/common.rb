@@ -31,6 +31,10 @@ monitoring_metric "syslog" do
   type "syslog"
 end
 
+monitoring_metric "cpu" do
+  type "cpu"
+end
+
 # base load alerts -- loadavg 5 > 2 x logical procs
 monitoring_metric "load" do
   type "load"
