@@ -84,7 +84,7 @@ end
 # set up thresholds for 80% total bandwidth.  Sadly, I don't know
 # if this is pre-differentiated
 node["network"]["interfaces"].inject([]) do |ary, (k,v)|
-  if v.has_key?("encapsulation") and v["encapsulation"] = "Ethernet"
+  if v.has_key?("encapsulation") and v["encapsulation"] == "Ethernet"
     ary << k
   else
     ary
