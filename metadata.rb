@@ -5,10 +5,10 @@ description      "Installs/Configures hardware"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.14"
 
-%w{ ubuntu redhat centos }.each do |os|
+%w{ centos ubuntu }.each do |os|
   supports os
 end
 
-%w{ apt osops-utils monitoring }.each do |dep|
+%w{ apt monitoring osops-utils }.each do |dep|
   depends dep
 end
