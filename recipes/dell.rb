@@ -109,10 +109,10 @@ ruby_block "check idrac version" do
     Chef::Log.error("In check idrac")
     if not false #node.has_key?("omsa")
       Chef::Log.error("Doing omreport")
-      node["omsa"] = {}
+      node.set["omsa"] = {}
       omreport = "/opt/dell/srvadmin/bin/omreport"
 
-      node["omsa"]["drac"] = {}
+      node.set["omsa"]["drac"] = {}
 
       drac_values = {
         "device" => /^Device Type/,
@@ -128,7 +128,7 @@ ruby_block "check idrac version" do
         key, *value = line.split(":",2)
         drac_values.each_pair do |attr, regex|
           if key =~ regex
-            node["omsa"]["drac"][attr] = value[0]
+            node.set["omsa"]["drac"][attr] = value[0]
           end
         end
       end
