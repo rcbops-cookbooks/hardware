@@ -35,6 +35,14 @@ monitoring_metric "cpu" do
   type "cpu"
 end
 
+monitoring_metric "memory" do
+  type "memory"
+end
+
+monitoring_metric "swap" do
+  type "swap"
+end
+
 # base load alerts -- loadavg 5 > 2 x logical procs
 monitoring_metric "load" do
   type "load"
