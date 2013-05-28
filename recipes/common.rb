@@ -17,15 +17,7 @@
 # limitations under the License.
 #
 
-# All platforms get some kind of monitoring
-
 include_recipe "monitoring"
-
-# %W{syslog cpu disk interface memory swap load}.each do |metric|
-#   monitoring_metric metric do
-#     type metric
-#   end
-# end
 
 monitoring_metric "syslog" do
   type "syslog"
@@ -46,22 +38,28 @@ end
 # base load alerts -- loadavg 5 > 2 x logical procs
 monitoring_metric "load" do
   type "load"
-  warning_max (node["cpu"]["total"] * 2).to_s
+  warning_max((node["cpu"]["total"] * 2).to_s)
 end
 
-unmonitored_fs = [ "proc", "sysfs", "fusectl", "debugfs", "securityfs", "devtmpfs", "devpts", "tmpfs", "xenfs" ]
+# TODO:(claco) move to attributes so we can ignore other things
+unmonitored_fs =
+  %w(proc sysfs fusectl debugfs securityfs devtmpfs devpts tmpfs xenfs)
 
+# TODO:(claco) Push these crazy finders up into osops-utils libraries
+#
 # set up base disk utilization -- warn at 80% used for all mounted partitions
 # alarm at 95%, or 4G, whichever is higher
-node["filesystem"].inject({}) do |hash,(k,v)|
-  if v.has_key?("mount") and v.has_key?("fs_type") and not unmonitored_fs.include?(v["fs_type"]) and v.has_key?("kb_size")
+node["filesystem"].inject({}) do |hash, (k, v)|
+  if v.has_key?("mount") and v.has_key?("fs_type") and
+    not unmonitored_fs.include?(v["fs_type"]) and v.has_key?("kb_size") then
+
     hash.merge(v["mount"] => 1024 * v["kb_size"].to_i)
   else
     hash
   end
-end.each_pair do |key,value|
+end.each_pair do |key, value|
   warning_val = 0.8 * value
-  alarm_val = [ 0.95 * value, value - (4096 * 1024 * 1024 * 1024)].max
+  alarm_val = [0.95 * value, value - (4096 * 1024 * 1024 * 1024)].max
 
   monitoring_metric key do
     type "df"
@@ -75,7 +73,7 @@ end
 # base alert for high paging -- find the swap disk (if it exists)
 # and set up warnings for > 1500 write ops/sec - indicative of high
 # paging activity
-node["filesystem"].inject([]) do |ary, (k,v)|
+node["filesystem"].inject([]) do |ary, (k, v)|
   if v.has_key?("fs_type") and v["fs_type"] == "swap"
     ary << k.split("/").last
   else
@@ -91,7 +89,7 @@ end
 
 # set up thresholds for 80% total bandwidth.  Sadly, I don't know
 # if this is pre-differentiated
-node["network"]["interfaces"].inject([]) do |ary, (k,v)|
+node["network"]["interfaces"].inject([]) do |ary, (k, v)|
   if v.has_key?("encapsulation") and v["encapsulation"] == "Ethernet"
     ary << k
   else
@@ -101,6 +99,6 @@ end.each do |netdev|
   monitoring_metric "network-#{netdev}" do
     type "interface"
     interface netdev
-    warning_max (80 * 1024 * 1024).to_s
+    warning_max((80 * 1024 * 1024).to_s)
   end
 end
