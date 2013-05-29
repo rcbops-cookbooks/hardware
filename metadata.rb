@@ -9,6 +9,6 @@ version          "0.0.16"
   supports os
 end
 
-%w{ apt monitoring osops-utils }.each do |dep|
+%w{ monitoring }.each do |dep|
   depends dep
 end
