@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: hardware
-# Attributes:: default
+# Cookbook Name:: hardware_test
+# Recipe:: default
 #
 # Copyright 2012, Rackspace US, Inc.
 #
@@ -16,3 +16,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include_recipe "hardware::default"

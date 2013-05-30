@@ -13,7 +13,6 @@ Please title the issue as follows:
 In the issue description, please include a longer description of the issue, along with any relevant log/command/error output.  
 If logfiles are extremely long, please place the relevant portion into the issue description, and link to a gist containing the entire logfile
 
-
 Description
 ===========
 
@@ -23,31 +22,53 @@ for health checking of generic hardware resources like memory, cpu, swap, etc.
 Requirements
 ============
 
-Chef 0.10.0 or higher required (for Chef environment use).
+Chef 11.0 or higher required (for Chef environment use).
 
 Platforms
---------
+---------
 
- * CentOS >= 6.3
- * Ubuntu >= 12.04
+This cookbook is actively tested on the following platforms/versions:
+
+* Ubuntu-12.04
+* CentOS-6.3
+
+While not actively tested, this cookbook should also work the following platforms:
+
+* Debian/Mint derivitives
+* Amazon/Oracle/Scientific/RHEL
 
 Cookbooks
 ---------
 
 The following cookbooks are dependencies:
 
- * monitoring: used to establish some base metrics and alerting
+ * monitoring
+
+Recipes
+=======
+
+default
+-------
+Installs various monitonoring/metrics common to all supported hardware
+
+common
+--------
+Installs various monitonoring/metrics common to all supported hardware
+
 
 Attributes
 ==========
 
 None
 
+
 Usage
 =====
 
-add "recipe[hardware::default] to your runlist.  Set appropriate node
-overrides (probably at environment level).  Enjoy great success.
+```ruby
+include_recipe "hardware::common"
+````
+
 
 License and Author
 ==================
@@ -60,6 +81,7 @@ Author:: William Kelly (<william.kelly@rackspace.com>)
 Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)  
 Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)  
 Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
+Author:: Chris Laco (<chris.laco@rackspace.com>)
 
 Copyright 2012, Rackspace US, Inc.  
 
