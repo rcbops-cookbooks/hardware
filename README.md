@@ -83,7 +83,7 @@ Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)
 Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
 Author:: Chris Laco (<chris.laco@rackspace.com>)
 
-Copyright 2012, Rackspace US, Inc.  
+Copyright 2012-2013, Rackspace US, Inc.  
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
